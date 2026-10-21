@@ -1,70 +1,58 @@
-import { SymbolView } from 'expo-symbols';
-import { Link, Tabs } from 'expo-router';
-import { Platform, Pressable } from 'react-native';
+import { Tabs } from "expo-router";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import Colors from '@/constants/Colors';
-import { useColorScheme } from '@/components/useColorScheme';
-import { useClientOnlyValue } from '@/components/useClientOnlyValue';
+import { AppTabBar } from "@/app/navigation/AppTabBar";
+import { tabBarClearance } from "@/app/navigation/tabBar";
+import { useTheme } from "@/app/theme";
+import { climbChrome } from "@/features/mountain-climber";
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  const { colors, scheme } = useTheme();
+  const insets = useSafeAreaInsets();
+  const clearance = tabBarClearance(insets.bottom);
+  const climbPage = climbChrome(scheme).page;
 
   return (
     <Tabs
+      tabBar={(props) => (
+        <AppTabBar
+          state={props.state}
+          descriptors={props.descriptors}
+          insets={props.insets}
+          navigation={props.navigation}
+        />
+      )}
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme].tint,
-        // Disable the static render of the header on web
-        // to prevent a hydration error in React Navigation v6.
-        headerShown: useClientOnlyValue(false, true),
-      }}>
+        headerShown: false,
+        lazy: true,
+        freezeOnBlur: true,
+        animation: "fade",
+        sceneStyle: { paddingBottom: clearance, backgroundColor: colors.surface },
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Tab One',
-          tabBarIcon: ({ color }) => (
-            <SymbolView
-              name={{
-                ios: 'chevron.left.forwardslash.chevron.right',
-                android: 'code',
-                web: 'code',
-              }}
-              tintColor={color}
-              size={28}
-            />
-          ),
-          headerRight: () => (
-            <Link href="/modal" asChild>
-              <Pressable style={{ marginRight: 15 }}>
-                {({ pressed }) => (
-                  <SymbolView
-                    name={{ ios: 'info.circle', android: 'info', web: 'info' }}
-                    size={25}
-                    tintColor={Colors[colorScheme].text}
-                    style={{ opacity: pressed ? 0.5 : 1 }}
-                  />
-                )}
-              </Pressable>
-            </Link>
-          ),
+          title: "Home",
+          sceneStyle: { paddingBottom: 0, backgroundColor: "transparent" },
         }}
       />
       <Tabs.Screen
-        name="two"
+        name="climb"
         options={{
-          title: 'Tab Two',
-          tabBarIcon: ({ color }) => (
-            <SymbolView
-              name={{
-                ios: 'chevron.left.forwardslash.chevron.right',
-                android: 'code',
-                web: 'code',
-              }}
-              tintColor={color}
-              size={28}
-            />
-          ),
+          title: "Climb",
+          sceneStyle: { paddingBottom: clearance, backgroundColor: climbPage },
         }}
       />
+      <Tabs.Screen
+        name="taurus"
+        options={{
+          title: "Taurus",
+          sceneStyle: { paddingBottom: 0, backgroundColor: "transparent" },
+        }}
+      />
+      <Tabs.Screen name="clutter" options={{ title: "Clutter" }} />
+      <Tabs.Screen name="more" options={{ title: "More" }} />
     </Tabs>
   );
 }
