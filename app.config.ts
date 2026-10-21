@@ -5,7 +5,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   name: "PaceMaker",
   slug: "pacemaker-mobile",
   owner: "debmalya99",
-  version: "1.0.0",
+  version: "1.0.1",
   runtimeVersion: {
     policy: "appVersion",
   },

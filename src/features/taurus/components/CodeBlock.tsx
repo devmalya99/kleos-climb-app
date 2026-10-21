@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Platform, Pressable, StyleSheet, Text, View } from "react-native";
-import * as Clipboard from "expo-clipboard";
 
 import { spacing, typography } from "@/app/theme";
 import { logger } from "@/services/logging/logger";
@@ -43,6 +42,9 @@ export function CodeBlock({ code, language, chrome }: CodeBlockProps) {
 
   async function onCopy() {
     try {
+      // Loaded on press. A static import crashes existing binaries that do not
+      // include the ExpoClipboard native module yet.
+      const Clipboard = await import("expo-clipboard");
       await Clipboard.setStringAsync(code);
       setCopied(true);
       if (timer.current) clearTimeout(timer.current);

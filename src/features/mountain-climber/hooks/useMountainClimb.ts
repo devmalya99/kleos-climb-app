@@ -4,7 +4,6 @@ import * as Crypto from "expo-crypto";
 import { useEffect, useState } from "react";
 
 import { useSoftAction } from "@/shared/hooks/useSoftAction";
-import { confirmAction } from "@/shared/utils/confirmAction";
 import { logger } from "@/services/logging/logger";
 
 import {
@@ -166,16 +165,7 @@ export function useMountainClimb() {
   function deleteSummit() {
     if (!climb) return;
     const climbId = climb.id;
-    confirmAction(
-      {
-        title: "Delete this summit?",
-        message: "This trail and its tasks will be erased. Your other summits stay.",
-        confirmLabel: "Delete summit",
-      },
-      () => {
-        void run(() => deleteMutation.mutateAsync(climbId), "Could not delete the summit");
-      },
-    );
+    void run(() => deleteMutation.mutateAsync(climbId), "Could not delete the expedition");
   }
 
   return {

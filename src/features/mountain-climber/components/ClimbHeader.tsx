@@ -54,6 +54,7 @@ export function ClimbHeader({
   const overdue = stats.daysLeft < 0;
   const [pickerOpen, setPickerOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
   const summitKm = summitKilometersLabel();
 
   return (
@@ -114,14 +115,14 @@ export function ClimbHeader({
         )}
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Summit actions"
+          accessibilityLabel="Expedition actions"
           onPress={() => setMenuOpen(true)}
           style={night ? styles.iconButton : styles.summit}
         >
           {night ? (
             <SymbolView name={icon("line.3.horizontal", "menu")} tintColor={chrome.ink} size={18} />
           ) : (
-            <Text style={styles.summitLabel}>Summit</Text>
+            <Text style={styles.summitLabel}>Expedition</Text>
           )}
         </Pressable>
       </View>
@@ -135,16 +136,47 @@ export function ClimbHeader({
           }}
         />
       </SheetModal>
-      <SheetModal visible={menuOpen} title="Summit" onClose={() => setMenuOpen(false)}>
+      <SheetModal
+        visible={menuOpen}
+        title="Expedition"
+        onClose={() => {
+          setConfirmDelete(false);
+          setMenuOpen(false);
+        }}
+      >
         <Button
-          label="New summit"
+          label="New expedition"
           variant="secondary"
           onPress={() => {
+            setConfirmDelete(false);
             setMenuOpen(false);
             onNewSummit();
           }}
         />
-        <Button label="Delete summit" variant="danger" onPress={onDelete} loading={deleting} />
+        {confirmDelete ? (
+          <>
+            <Text style={styles.deleteWarning}>
+              This deletes the entire expedition, including every camp and task. Other expeditions stay.
+            </Text>
+            <Button
+              label="Delete expedition"
+              variant="danger"
+              loading={deleting}
+              onPress={() => {
+                onDelete();
+                setConfirmDelete(false);
+                setMenuOpen(false);
+              }}
+            />
+            <Button label="Cancel" variant="ghost" onPress={() => setConfirmDelete(false)} />
+          </>
+        ) : (
+          <Button
+            label="Delete expedition"
+            variant="danger"
+            onPress={() => setConfirmDelete(true)}
+          />
+        )}
       </SheetModal>
     </View>
   );
@@ -247,6 +279,12 @@ function createStyles(chrome: ClimbChrome) {
       fontFamily: typography.bodyBold,
       fontSize: 16,
       color: chrome.positive,
+    },
+    deleteWarning: {
+      fontFamily: typography.body,
+      fontSize: 15,
+      lineHeight: 22,
+      color: chrome.muted,
     },
   });
 }

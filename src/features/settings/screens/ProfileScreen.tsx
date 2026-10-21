@@ -13,7 +13,7 @@ import { Screen } from "@/shared/components/Screen";
 import { ScreenHeader } from "@/shared/components/ScreenHeader";
 import { confirmAction } from "@/shared/utils/confirmAction";
 
-const APP_VERSION = Constants.expoConfig?.version ?? "1.0.0";
+const APP_VERSION = Constants.expoConfig?.version ?? "1.0.1";
 
 export function ProfileScreen() {
   const { colors } = useTheme();
