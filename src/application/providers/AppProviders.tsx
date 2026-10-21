@@ -1,6 +1,7 @@
 import { BebasNeue_400Regular } from "@expo-google-fonts/bebas-neue";
 import {
   DMSans_400Regular,
+  DMSans_400Regular_Italic,
   DMSans_500Medium,
   DMSans_700Bold,
   useFonts,
@@ -55,6 +56,7 @@ export function AppProviders({ children }: { children: ReactNode }) {
   const [fontsLoaded] = useFonts({
     BebasNeue_400Regular,
     DMSans_400Regular,
+    DMSans_400Regular_Italic,
     DMSans_500Medium,
     DMSans_700Bold,
   });

@@ -13,13 +13,11 @@ import Animated, {
 import { spacing, typography, useTheme } from "@/app/theme";
 
 import type { TaurusMessage } from "../types/taurus.types";
-import { layoutAssistantMessage } from "../utils/assistantLayout";
 import { formatClock } from "../utils/formatSessionStamp";
-import { getMessageText, isToolPart } from "../utils/messageParts";
+import { getMessageText, isRunningTool } from "../utils/messageParts";
 import { taurusChrome, type TaurusChrome } from "../utils/taurusChrome";
 
-import { AssistantCard } from "./AssistantCard";
-import { RichText } from "./RichText";
+import { AssistantMarkdown } from "./AssistantMarkdown";
 import { ToolChip } from "./ToolChip";
 
 type MessageBubbleProps = {
@@ -39,12 +37,12 @@ export function MessageBubble({ message, streaming, sentAt, enter = false }: Mes
 
   const isUser = message.role === "user";
   const text = getMessageText(message);
-  const toolParts = message.parts.filter(isToolPart);
-  const layout = !isUser && text ? layoutAssistantMessage(text) : null;
+  const runningTools = message.parts.filter(isRunningTool);
 
-  if (!text && toolParts.length === 0 && !streaming) return null;
+  if (isUser && !text) return null;
+  if (!isUser && !text && runningTools.length === 0 && !streaming) return null;
 
-  const tools = toolParts.map((part, index) => (
+  const tools = runningTools.map((part, index) => (
     <ToolChip key={String(part.toolCallId ?? index)} part={part} />
   ));
   const entering = !enter
@@ -53,25 +51,23 @@ export function MessageBubble({ message, streaming, sentAt, enter = false }: Mes
       ? FadeInDown.duration(240).springify().damping(16)
       : FadeInUp.duration(280).springify().damping(18);
 
-  if (layout?.rich) {
-    return (
-      <Animated.View entering={entering}>
-        <AssistantCard layout={layout} tools={tools} />
-      </Animated.View>
-    );
-  }
-
   return (
     <Animated.View entering={entering} style={[styles.row, isUser ? styles.rowUser : null]}>
       <View style={[styles.bubble, isUser ? styles.bubbleUser : styles.bubbleAssistant]}>
         {tools}
-        {text ? (
-          <RichText
-            text={text}
-            style={isUser ? styles.textUser : styles.text}
-            codeColor={chrome.honey}
-          />
-        ) : streaming ? (
+        {isUser ? (
+          <Text selectable style={styles.textUser}>
+            {text}
+          </Text>
+        ) : text ? (
+          streaming ? (
+            <Text selectable style={styles.text}>
+              {text}
+            </Text>
+          ) : (
+            <AssistantMarkdown text={text} />
+          )
+        ) : runningTools.length === 0 ? (
           <ThinkingPulse color={chrome.subtle} />
         ) : null}
         {isUser && sentAt ? <Text style={styles.meta}>{formatClock(sentAt)} · Delivered</Text> : null}
@@ -101,36 +97,16 @@ function createStyles(chrome: TaurusChrome) {
   return StyleSheet.create({
     row: { flexDirection: "row" },
     rowUser: { justifyContent: "flex-end" },
-    bubble: {
-      maxWidth: "88%",
-      gap: spacing.sm,
-      paddingHorizontal: spacing.md,
-      paddingVertical: spacing.md,
-      borderRadius: 22,
-    },
+    bubble: { gap: spacing.sm, paddingHorizontal: spacing.md, paddingVertical: spacing.md, borderRadius: 22 },
     bubbleUser: {
+      maxWidth: "88%",
       backgroundColor: chrome.card,
       borderWidth: 1,
       borderColor: chrome.userBorder,
     },
-    bubbleAssistant: { backgroundColor: chrome.card },
-    text: {
-      fontFamily: typography.body,
-      fontSize: 16,
-      lineHeight: 23,
-      color: chrome.ink,
-    },
-    textUser: {
-      fontFamily: typography.body,
-      fontSize: 16,
-      lineHeight: 23,
-      color: chrome.ink,
-    },
-    meta: {
-      alignSelf: "flex-end",
-      fontFamily: typography.bodyMedium,
-      fontSize: 11,
-      color: chrome.subtle,
-    },
+    bubbleAssistant: { width: "100%", backgroundColor: chrome.card },
+    text: { fontFamily: typography.body, fontSize: 15, lineHeight: 22, color: chrome.ink },
+    textUser: { fontFamily: typography.body, fontSize: 16, lineHeight: 23, color: chrome.ink },
+    meta: { alignSelf: "flex-end", fontFamily: typography.bodyMedium, fontSize: 11, color: chrome.subtle },
   });
 }

@@ -78,6 +78,7 @@ export const radius = {
 export const typography = {
   display: "BebasNeue_400Regular",
   body: "DMSans_400Regular",
+  bodyItalic: "DMSans_400Regular_Italic",
   bodyMedium: "DMSans_500Medium",
   bodyBold: "DMSans_700Bold",
 } as const;

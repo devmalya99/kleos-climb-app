@@ -1,3 +1,4 @@
+import Constants from "expo-constants";
 import { router } from "expo-router";
 import { useState } from "react";
 import { StyleSheet, Text } from "react-native";
@@ -11,6 +12,8 @@ import { ListRow } from "@/shared/components/ListRow";
 import { Screen } from "@/shared/components/Screen";
 import { ScreenHeader } from "@/shared/components/ScreenHeader";
 import { confirmAction } from "@/shared/utils/confirmAction";
+
+const APP_VERSION = Constants.expoConfig?.version ?? "1.0.0";
 
 export function ProfileScreen() {
   const { colors } = useTheme();
@@ -51,6 +54,9 @@ export function ProfileScreen() {
       />
       {error ? <Text style={styles.error}>{error}</Text> : null}
       <Button label="Sign out" variant="danger" loading={signingOut} onPress={handleLogout} />
+      <Text style={styles.version} accessibilityLabel={`App version ${APP_VERSION}`}>
+        v{APP_VERSION}
+      </Text>
     </Screen>
   );
 }
@@ -59,5 +65,13 @@ function createStyles(colors: AppColors) {
   return StyleSheet.create({
   content: { gap: spacing.md, paddingBottom: spacing.xxl },
   error: { fontFamily: typography.bodyMedium, color: colors.danger },
+  version: {
+    marginTop: "auto",
+    paddingTop: spacing.lg,
+    textAlign: "center",
+    fontFamily: typography.body,
+    fontSize: 12,
+    color: colors.inkSubtle,
+  },
 });
 }

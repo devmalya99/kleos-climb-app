@@ -1,5 +1,5 @@
-import { memo, useState } from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { memo, useEffect, useState } from "react";
+import { Image, Keyboard, Platform, StyleSheet, Text, View, type KeyboardEvent } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { tabBarClearance } from "@/app/navigation/tabBar";
@@ -25,6 +25,26 @@ const backdrop = {
 /** Light stays soft. Dark is blurred a little more so the glow does not fight the thread. */
 const backdropBlur = { light: 8, dark: 12 } as const;
 
+/** Android draws the keyboard over the screen, so the composer has to move itself. */
+function useKeyboardOverlap(): number {
+  const [overlap, setOverlap] = useState(0);
+
+  useEffect(() => {
+    const showEvent = Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow";
+    const hideEvent = Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide";
+    const show = Keyboard.addListener(showEvent, (event: KeyboardEvent) => {
+      setOverlap(event.endCoordinates.height);
+    });
+    const hide = Keyboard.addListener(hideEvent, () => setOverlap(0));
+    return () => {
+      show.remove();
+      hide.remove();
+    };
+  }, []);
+
+  return overlap;
+}
+
 const Backdrop = memo(function Backdrop({ night }: { night: boolean }) {
   return (
     <Image
@@ -46,8 +66,11 @@ export function TaurusScreen() {
 
   const taurus = useTaurusConversations();
   const trail = useTaurusTrail();
+  const keyboardOverlap = useKeyboardOverlap();
   const [historyOpen, setHistoryOpen] = useState(false);
   const { conversation } = taurus;
+  const bottomPad =
+    keyboardOverlap > 0 ? keyboardOverlap + spacing.sm : tabBarClearance(insets.bottom);
 
   return (
     <View style={styles.fill}>
@@ -55,7 +78,7 @@ export function TaurusScreen() {
       <Screen
         edges={["top"]}
         style={styles.screen}
-        contentStyle={[styles.content, { paddingBottom: tabBarClearance(insets.bottom) }]}
+        contentStyle={[styles.content, { paddingBottom: bottomPad }]}
       >
         <TaurusHeader
           newDisabled={taurus.isWorking}

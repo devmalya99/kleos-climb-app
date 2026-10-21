@@ -13,6 +13,18 @@ export type TaurusChrome = {
   userBorder: string;
   blue: string;
   danger: string;
+  /** Muted cyan for list markers and inline code. */
+  cyan: string;
+  /** Quote bar. */
+  violet: string;
+  /** Link text. */
+  sky: string;
+  /** Fenced code sits on a dark panel in both schemes. */
+  codePanel: string;
+  codeInk: string;
+  codeMuted: string;
+  /** Inline `code` chip, tuned to the bubble behind it. */
+  codeChip: string;
 };
 
 const DARK: TaurusChrome = {
@@ -30,6 +42,13 @@ const DARK: TaurusChrome = {
       userBorder: "#E0B03A",
       blue: "#4C8DFF",
   danger: "#FF6B6B",
+  cyan: "#7DCEC6",
+  violet: "#B79CFF",
+  sky: "#7EBEFF",
+  codePanel: "#0B1018",
+  codeInk: "#E8EEF6",
+  codeMuted: "#8B97A8",
+  codeChip: "#152028",
 };
 
 const LIGHT: TaurusChrome = {
@@ -46,7 +65,14 @@ const LIGHT: TaurusChrome = {
     markInk: "#FFFFFF",
     userBorder: "#C4922A",
     blue: "#3B6FD8",
-  danger: "#C94545",
+    danger: "#C94545",
+    cyan: "#2F7A72",
+    violet: "#6E56CF",
+    sky: "#2F6FDB",
+    codePanel: "#0B1018",
+    codeInk: "#E8EEF6",
+    codeMuted: "#8B97A8",
+    codeChip: "#E5F3F1",
 };
 
 /** Chat colors for the Taurus layout. Dark matches the night chat mock. */

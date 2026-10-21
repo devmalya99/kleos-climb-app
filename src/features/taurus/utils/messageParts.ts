@@ -27,6 +27,10 @@ export function getToolLabel(part: TaurusPart): string {
   return name.replace(/_/g, " ");
 }
 
+export function isRunningTool(part: TaurusPart): boolean {
+  return isToolPart(part) && !isFinishedTool(part);
+}
+
 function isFinishedTool(part: TaurusPart): boolean {
   return part.state === TOOL_STATE.OUTPUT_AVAILABLE || part.state === TOOL_STATE.OUTPUT_ERROR;
 }

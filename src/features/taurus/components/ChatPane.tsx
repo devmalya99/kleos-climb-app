@@ -1,5 +1,5 @@
-import { useRef } from "react";
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from "react-native";
+import { useEffect, useRef } from "react";
+import { Keyboard, Platform, ScrollView, StyleSheet, Text, View } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
 
 import { spacing, typography, useTheme } from "@/app/theme";
@@ -41,11 +41,16 @@ export function ChatPane({ conversationId, initialMessages, activityAt }: ChatPa
   const lastIndex = chat.messages.length - 1;
   const stamp = formatSessionStamp(activityAt);
 
+  useEffect(() => {
+    const eventName = Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow";
+    const subscription = Keyboard.addListener(eventName, () => {
+      scrollRef.current?.scrollToEnd({ animated: true });
+    });
+    return () => subscription.remove();
+  }, []);
+
   return (
-    <KeyboardAvoidingView
-      style={styles.flex}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
-    >
+    <View style={styles.flex}>
       <PromptChips disabled={chat.isStreaming} onPress={(message) => void chat.send(message)} />
       <ScrollView
         ref={scrollRef}
@@ -79,7 +84,7 @@ export function ChatPane({ conversationId, initialMessages, activityAt }: ChatPa
 
       {chat.error ? <Text style={styles.error}>{chat.error}</Text> : null}
       <ChatComposer streaming={chat.isStreaming} onSend={chat.send} onStop={chat.stop} />
-    </KeyboardAvoidingView>
+    </View>
   );
 }
 
