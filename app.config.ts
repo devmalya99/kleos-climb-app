@@ -6,9 +6,9 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   slug: "pacemaker-mobile",
   owner: "debmalya99",
   version: "1.0.1",
-  runtimeVersion: {
-    policy: "appVersion",
-  },
+  // Finished preview binary (Android build 1, 21 Oct 2026) is runtime 1.0.0.
+  // Pin this so the next OTA still installs there. `version` is what Settings shows.
+  runtimeVersion: "1.0.0",
   updates: {
     url: "https://u.expo.dev/5b3a79bb-d161-44a4-b1c4-7df3107e2a16",
   },

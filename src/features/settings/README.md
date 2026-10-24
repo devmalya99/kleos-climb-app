@@ -7,7 +7,7 @@ Account preferences. `ProfileScreen` lives here because it only reads `me` and s
 - `hooks/useSettings` — availability form state, notification speech toggle, quest pacing query. Mutations return `{ user }`; after each one we call `useAuth().refreshMe()` so `me` stays the single source of truth (no duplicated user state).
 - `utils/availability.schemas` — XP goals 100–5000 (whole numbers) and IANA timezone validation via `Intl`.
 - `components/QuestPacingSection` — renders `GET /api/user/quest-pacing`.
-- `screens/ProfileScreen` — email, timezone, XP goals, sign out via `useAuth().logout()` then `router.replace("/(auth)/welcome")`. A small version tag at the bottom reads `expoConfig.version` (currently `1.0.1`) so the installed build can be identified.
+- `screens/SettingsScreen` and `screens/ProfileScreen` — both show `expoConfig.version` at the bottom (`1.0.1`). The installed preview binary is runtime `1.0.0`; that runtime stays pinned in `app.config.ts` so an OTA can still reach it. Profile also shows the account and signs out via `useAuth().logout()`, then `router.replace("/(auth)/welcome")`.
 
 ## Routes owned
 `app/more/settings.tsx` · `app/more/profile.tsx`

@@ -1,3 +1,4 @@
+import Constants from "expo-constants";
 import { StyleSheet, Switch, Text, View } from "react-native";
 
 import { spacing, typography, useTheme, type AppColors, type ThemePreference } from "@/app/theme";
@@ -9,6 +10,8 @@ import { TextField } from "@/shared/components/TextField";
 import { QuestPacingSection } from "../components/QuestPacingSection";
 import { XP_GOAL_MAX, XP_GOAL_MIN } from "../constants/settings.constants";
 import { useSettings } from "../hooks/useSettings";
+
+const APP_VERSION = Constants.expoConfig?.version ?? "1.0.1";
 
 const APPEARANCE_OPTIONS: { value: ThemePreference; label: string }[] = [
   { value: "system", label: "System" },
@@ -99,6 +102,9 @@ export function SettingsScreen() {
         error={settings.pacingError}
         onRetry={settings.retryPacing}
       />
+      <Text style={styles.version} accessibilityLabel={`App version ${APP_VERSION}`}>
+        v{APP_VERSION}
+      </Text>
     </Screen>
   );
 }
@@ -115,5 +121,12 @@ function createStyles(colors: AppColors) {
   switchTitle: { fontFamily: typography.bodyBold, fontSize: 16, color: colors.ink },
   appearance: { flexDirection: "row", gap: spacing.sm },
   appearanceButton: { flex: 1 },
+  version: {
+    marginTop: spacing.lg,
+    textAlign: "center",
+    fontFamily: typography.body,
+    fontSize: 12,
+    color: colors.inkSubtle,
+  },
 });
 }
