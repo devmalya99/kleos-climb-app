@@ -4,7 +4,7 @@ import { useState } from "react";
 import { StyleSheet, Text } from "react-native";
 
 import { spacing, typography, useTheme, type AppColors } from "@/app/theme";
-import { useAuth } from "@/features/auth";
+import { resolveDisplayName, useAuth } from "@/features/auth";
 import { getErrorMessage } from "@/services/api";
 import { logger } from "@/services/logging/logger";
 import { Button } from "@/shared/components/Button";
@@ -44,6 +44,7 @@ export function ProfileScreen() {
   return (
     <Screen scroll contentStyle={styles.content}>
       <ScreenHeader title="Profile" />
+      <ListRow title="Name" subtitle={resolveDisplayName(user) || "—"} />
       <ListRow title="Email" subtitle={user?.email ?? "—"} />
       <ListRow title="Timezone" subtitle={user?.timezone ?? "—"} />
       <ListRow

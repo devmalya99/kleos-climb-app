@@ -1,4 +1,6 @@
-import { router } from "expo-router";
+import { router, type Href } from "expo-router";
+
+import { needsOnboarding } from "@/app/navigation/signedInHref";
 import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
@@ -36,8 +38,8 @@ export function SignupScreen() {
     }
     setFieldErrors({});
     try {
-      await signup(parsed.data);
-      router.replace("/(tabs)");
+      const session = await signup(parsed.data);
+      router.replace((needsOnboarding(session.user) ? "/onboarding" : "/(tabs)") as Href);
     } catch (error) {
       setBanner(
         getErrorMessage(error) ||

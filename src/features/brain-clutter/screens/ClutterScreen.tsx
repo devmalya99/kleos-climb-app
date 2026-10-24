@@ -1,4 +1,4 @@
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { useCallback, useRef, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
@@ -20,11 +20,18 @@ export function ClutterScreen() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [taskCategoryId, setTaskCategoryId] = useState<string | null>(null);
   const [canEditCategory, setCanEditCategory] = useState(false);
+  const [unloadDismissed, setUnloadDismissed] = useState(false);
   const categoryActionsRef = useRef<TaskCategoryActions | null>(null);
   const onCategoryEditableChange = useCallback((editable: boolean) => {
     setCanEditCategory(editable);
   }, []);
   const showCategoryActions = mode === "tasks" && canEditCategory;
+
+  useFocusEffect(
+    useCallback(() => {
+      return () => setUnloadDismissed(false);
+    }, []),
+  );
 
   return (
     <Screen contentStyle={styles.content}>
@@ -47,7 +54,10 @@ export function ClutterScreen() {
       />
       <View style={styles.body}>
         {mode === "notes" ? (
-          <GroupsPanel />
+          <GroupsPanel
+            showFirstUnload={!unloadDismissed}
+            onDismissFirstUnload={() => setUnloadDismissed(true)}
+          />
         ) : (
           <TaskManagerScreen
             focusCategoryId={taskCategoryId}

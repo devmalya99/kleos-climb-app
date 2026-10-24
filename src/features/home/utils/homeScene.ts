@@ -9,10 +9,10 @@ export function homeScene(scheme: ResolvedScheme): number {
   return scheme === "dark" ? homeScenes.dark : homeScenes.light;
 }
 
-export function homeGreeting(scheme: ResolvedScheme, email: string | undefined): string {
+export function homeGreeting(scheme: ResolvedScheme, name: string | null | undefined): string {
   if (scheme === "dark") return "Good Night";
-  const name = displayName(email);
-  return name ? `Welcome, ${name}` : "Welcome";
+  const trimmed = name?.trim();
+  return trimmed ? `Welcome, ${trimmed}` : "Welcome";
 }
 
 export function homeDateLabel(now: Date): string {
@@ -20,8 +20,3 @@ export function homeDateLabel(now: Date): string {
   return `${now.getDate()} ${month}, ${now.getFullYear()}`;
 }
 
-function displayName(email: string | undefined): string | null {
-  const local = email?.split("@")[0]?.replace(/[._+-]+/g, " ").trim();
-  if (!local) return null;
-  return local.replace(/\b\w/g, (letter) => letter.toUpperCase());
-}

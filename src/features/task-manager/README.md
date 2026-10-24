@@ -7,11 +7,12 @@ Tasks inside user-defined categories, shown as the "Tasks" mode of the Clutter t
 - `hooks/useTaskCategories`, `useCategoryTasks` — CRUD with soft-locked errors.
 - `hooks/useExpandTasks` — paste → preview (nothing saved) → accept.
 - `hooks/useReviewTasks` — review → preview splits → apply the selected ones.
+- `components/TaskReorderSheet` — `POST /tasks/reorder` previews an order. Apply is `POST /tasks/reorder/apply` and replaces that category's task list. Fewer than two open tasks leaves the button off.
 - `store/focusTimer.store` + `hooks/useFocusTimer` — client-only 1–180 min timer (zustand). Closing the sheet unmounts it, which stops and resets the timer.
 
 ## API dependencies
-`/tasks/categories[/id][/tasks]` · `/tasks[/id]` · `/tasks/expand` · `/tasks/expand/accept` · `/tasks/review` · `/tasks/review/apply`
+`/tasks/categories[/id][/tasks]` · `/tasks[/id]` · `/tasks/expand` · `/tasks/expand/accept` · `/tasks/review` · `/tasks/review/apply` · `/tasks/reorder` · `/tasks/reorder/apply`
 
 ## Known limitations
 - Timer is not synced to the server and does not run in the background.
-- No due dates or drag reorder.
+- No due dates. Open tasks can be reordered by AI. Completed tasks keep their place below the open ones.

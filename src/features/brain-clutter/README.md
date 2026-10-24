@@ -9,6 +9,7 @@ Buckets (groups) that hold notes. The Clutter tab switches between this feature 
 - `hooks/useNoteRewrite` — AI rewrite preview. It never writes; "Apply" only fills the editor and the user still saves.
 - `hooks/useClutterSearch` — loads every bucket's notes and every category's tasks, then filters by title and body text. There is no server search route.
 - `components/ClutterSearchSheet` — Search button on the Clutter tab. A note opens its bucket. A task switches to Tasks and selects that category.
+- `components/FirstUnloadPrompt` — when the account has zero buckets, asks for one topic. Not now hides it until the Clutter tab is opened again. Submit uses the create-bucket API and opens that bucket.
 - `screens/ClutterScreen` (tab), `screens/GroupDetailScreen` (route `/clutter/[groupId]`).
 
 ## API dependencies

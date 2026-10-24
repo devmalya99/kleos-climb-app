@@ -11,6 +11,7 @@ import { CategoryNameSheet } from "../components/CategoryNameSheet";
 import { ExpandTasksSheet } from "../components/ExpandTasksSheet";
 import { FocusTimerSheet } from "../components/FocusTimerSheet";
 import { ReviewTasksSheet } from "../components/ReviewTasksSheet";
+import { TaskReorderSheet } from "../components/TaskReorderSheet";
 import { TaskEditorSheet } from "../components/TaskEditorSheet";
 import { TaskRow } from "../components/TaskRow";
 import { TaskToolbar } from "../components/TaskToolbar";
@@ -24,6 +25,7 @@ type Sheet =
   | { kind: "task"; task: Task | null }
   | { kind: "expand" }
   | { kind: "review" }
+  | { kind: "reorder" }
   | { kind: "focus"; task: Task }
   | null;
 
@@ -155,9 +157,11 @@ export function TaskManagerScreen({
             categoryName={active.name}
             pendingCount={active.openTaskCount}
             reviewDisabled={tasks.tasks.length === 0}
+            reorderDisabled={tasks.tasks.filter((task) => !task.isCompleted).length < 2}
             onNewTask={() => open({ kind: "task", task: null })}
             onExpand={() => open({ kind: "expand" })}
             onReview={() => open({ kind: "review" })}
+            onReorder={() => open({ kind: "reorder" })}
           />
 
           {tasks.isLoading ? <LoadingBlock label="Loading tasks…" /> : null}
@@ -210,6 +214,13 @@ export function TaskManagerScreen({
       ) : null}
       {sheet?.kind === "review" && active ? (
         <ReviewTasksSheet
+          categoryId={active.id}
+          tasks={tasks.tasks}
+          onClose={() => setSheet(null)}
+        />
+      ) : null}
+      {sheet?.kind === "reorder" && active ? (
+        <TaskReorderSheet
           categoryId={active.id}
           tasks={tasks.tasks}
           onClose={() => setSheet(null)}

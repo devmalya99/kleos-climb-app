@@ -4,7 +4,7 @@ import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 
 import { tabBarClearance } from "@/app/navigation/tabBar";
 import { spacing, typography, useTheme } from "@/app/theme";
-import { useAuth } from "@/features/auth";
+import { resolveDisplayName, useAuth } from "@/features/auth";
 import { getErrorMessage } from "@/services/api";
 
 import { SummitStrip } from "../components/SummitStrip";
@@ -60,7 +60,7 @@ export function HomeScreen() {
     >
       <SafeAreaView style={styles.fill} edges={["top"]}>
         <View style={styles.header}>
-          <Text style={styles.greeting}>{homeGreeting(scheme, user?.email)}</Text>
+          <Text style={styles.greeting}>{homeGreeting(scheme, resolveDisplayName(user))}</Text>
           <Text style={styles.date}>{homeDateLabel(new Date())}</Text>
         </View>
         <View style={styles.fill} />

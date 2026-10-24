@@ -15,9 +15,15 @@ import type { ClutterGroup } from "../types/brainClutter.types";
 
 import { GroupCard } from "./GroupCard";
 import { GroupNameSheet } from "./GroupNameSheet";
+import { FirstUnloadPrompt } from "./FirstUnloadPrompt";
+
+type GroupsPanelProps = {
+  showFirstUnload: boolean;
+  onDismissFirstUnload: () => void;
+};
 
 /** Notes mode of the Clutter tab: bucket list, stats and pending note-tasks. */
-export function GroupsPanel() {
+export function GroupsPanel({ showFirstUnload, onDismissFirstUnload }: GroupsPanelProps) {
   const { colors, scheme } = useTheme();
   const honey = CLUTTER_HONEY[scheme];
   const styles = createStyles(colors, honey, scheme === "dark");
@@ -49,7 +55,17 @@ export function GroupsPanel() {
     if (result?.ok) setSheet(null);
   }
 
+  async function unloadTopic(name: string) {
+    const result = await workspace.createGroup(name);
+    if (!result.ok) return;
+    onDismissFirstUnload();
+    router.push(clutterHref.group(result.value.id));
+  }
+
+  const askForFirstTopic = showFirstUnload && workspace.groups.length === 0 && sheet === null;
+
   return (
+    <>
     <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
       {workspace.stats ? (
         <Text style={styles.stats}>
@@ -113,6 +129,15 @@ export function GroupsPanel() {
         />
       ) : null}
     </ScrollView>
+    {askForFirstTopic ? (
+      <FirstUnloadPrompt
+        saving={workspace.isSaving}
+        error={workspace.error}
+        onSubmit={(name) => void unloadTopic(name)}
+        onDismiss={onDismissFirstUnload}
+      />
+    ) : null}
+    </>
   );
 }
 

@@ -121,6 +121,40 @@ export function setLevelProgress(
   };
 }
 
+/** Same ids, any order, no duplicates. An empty list is not a permutation. */
+export function isIdPermutation(current: readonly string[], proposed: readonly string[]): boolean {
+  if (current.length === 0 || current.length !== proposed.length) return false;
+  const expected = new Set(current);
+  if (expected.size !== current.length) return false;
+  const seen = new Set<string>();
+  for (const id of proposed) {
+    if (!expected.has(id) || seen.has(id)) return false;
+    seen.add(id);
+  }
+  return seen.size === current.length;
+}
+
+/**
+ * Puts open levels in `levelIds` order after the cleared block.
+ * A list that adds, drops, or repeats an id is ignored.
+ * The first id becomes the next task to clear. Progress and notes stay on the level.
+ */
+export function reorderPendingLevels(climb: Climb, levelIds: readonly string[]): Climb {
+  const cleared = climb.levels.filter((level) => level.completedAt !== null);
+  const pending = climb.levels.filter((level) => level.completedAt === null);
+  const currentIds = pending.map((level) => level.id);
+  if (!isIdPermutation(currentIds, levelIds)) return climb;
+  if (currentIds.every((id, index) => id === levelIds[index])) return climb;
+  const byId = new Map(pending.map((level) => [level.id, level]));
+  const nextPending: ClimbLevel[] = [];
+  for (const id of levelIds) {
+    const level = byId.get(id);
+    if (!level) return climb;
+    nextPending.push(level);
+  }
+  return { ...climb, levels: [...cleared, ...nextPending] };
+}
+
 /** Moves `activeId` to the position of `overId`. Cleared levels are frozen and never move. */
 export function movePendingLevel(climb: Climb, activeId: string, overId: string): Climb {
   const cleared = climb.levels.filter((level) => level.completedAt !== null);
@@ -158,6 +192,8 @@ export function applyClimbAction(
       return setLevelProgress(climb, action.levelId, action.progress, now);
     case "move":
       return movePendingLevel(climb, action.activeId, action.overId);
+    case "reorder":
+      return reorderPendingLevels(climb, action.levelIds);
   }
 }
 

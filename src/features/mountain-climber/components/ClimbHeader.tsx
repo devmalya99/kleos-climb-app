@@ -4,7 +4,6 @@ import type { ComponentProps } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { radius, spacing, typography, useTheme } from "@/app/theme";
-import { Button } from "@/shared/components/Button";
 import { SheetModal } from "@/shared/components/SheetModal";
 
 import type { ClimbSession, ClimbStats } from "../types/climb.types";
@@ -17,6 +16,7 @@ import {
   type ClimbChrome,
 } from "../utils/climb-chrome";
 import { SummitSwitcher } from "./SummitSwitcher";
+import { ExpeditionMenuSheet } from "./ExpeditionMenuSheet";
 
 type SymbolName = Extract<ComponentProps<typeof SymbolView>["name"], object>;
 
@@ -28,6 +28,8 @@ type ClimbHeaderProps = {
   climbId: string;
   onOpenSummit: (id: string) => void;
   onNewSummit: () => void;
+  onReorder: () => void;
+  canReorder: boolean;
   onDelete: () => void;
   onAddTask: () => void;
   deleting: boolean;
@@ -42,6 +44,8 @@ export function ClimbHeader({
   climbId,
   onOpenSummit,
   onNewSummit,
+  onReorder,
+  canReorder,
   onDelete,
   onAddTask,
   deleting,
@@ -54,7 +58,6 @@ export function ClimbHeader({
   const overdue = stats.daysLeft < 0;
   const [pickerOpen, setPickerOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [confirmDelete, setConfirmDelete] = useState(false);
   const summitKm = summitKilometersLabel();
 
   return (
@@ -115,6 +118,16 @@ export function ClimbHeader({
         )}
         <Pressable
           accessibilityRole="button"
+          accessibilityLabel="AI reorder"
+          accessibilityState={{ disabled: !canReorder }}
+          disabled={!canReorder}
+          onPress={onReorder}
+          style={[styles.summit, !canReorder ? styles.reorderOff : null]}
+        >
+          <Text style={styles.summitLabel}>AI reorder</Text>
+        </Pressable>
+        <Pressable
+          accessibilityRole="button"
           accessibilityLabel="Expedition actions"
           onPress={() => setMenuOpen(true)}
           style={night ? styles.iconButton : styles.summit}
@@ -136,48 +149,13 @@ export function ClimbHeader({
           }}
         />
       </SheetModal>
-      <SheetModal
+      <ExpeditionMenuSheet
         visible={menuOpen}
-        title="Expedition"
-        onClose={() => {
-          setConfirmDelete(false);
-          setMenuOpen(false);
-        }}
-      >
-        <Button
-          label="New expedition"
-          variant="secondary"
-          onPress={() => {
-            setConfirmDelete(false);
-            setMenuOpen(false);
-            onNewSummit();
-          }}
-        />
-        {confirmDelete ? (
-          <>
-            <Text style={styles.deleteWarning}>
-              This deletes the entire expedition, including every camp and task. Other expeditions stay.
-            </Text>
-            <Button
-              label="Delete expedition"
-              variant="danger"
-              loading={deleting}
-              onPress={() => {
-                onDelete();
-                setConfirmDelete(false);
-                setMenuOpen(false);
-              }}
-            />
-            <Button label="Cancel" variant="ghost" onPress={() => setConfirmDelete(false)} />
-          </>
-        ) : (
-          <Button
-            label="Delete expedition"
-            variant="danger"
-            onPress={() => setConfirmDelete(true)}
-          />
-        )}
-      </SheetModal>
+        deleting={deleting}
+        onClose={() => setMenuOpen(false)}
+        onNewSummit={onNewSummit}
+        onDelete={onDelete}
+      />
     </View>
   );
 }
@@ -243,7 +221,7 @@ function createStyles(chrome: ClimbChrome) {
     statHint: { fontFamily: typography.body, fontSize: 11, color: chrome.muted },
     statHintWarm: { fontFamily: typography.bodyMedium, fontSize: 11, color: chrome.honey },
     overdue: { color: "#E15B64" },
-    actions: { flexDirection: "row", alignItems: "center", gap: spacing.sm },
+    actions: { flexDirection: "row", flexWrap: "wrap", alignItems: "center", gap: spacing.sm },
     add: {
       flex: 1,
       minHeight: 48,
@@ -264,6 +242,7 @@ function createStyles(chrome: ClimbChrome) {
       justifyContent: "center",
     },
     summitLabel: { fontFamily: typography.bodyBold, fontSize: 15, color: chrome.ink },
+    reorderOff: { opacity: 0.45 },
     iconButton: {
       width: 48,
       height: 48,
@@ -279,12 +258,6 @@ function createStyles(chrome: ClimbChrome) {
       fontFamily: typography.bodyBold,
       fontSize: 16,
       color: chrome.positive,
-    },
-    deleteWarning: {
-      fontFamily: typography.body,
-      fontSize: 15,
-      lineHeight: 22,
-      color: chrome.muted,
     },
   });
 }

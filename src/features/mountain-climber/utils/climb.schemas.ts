@@ -109,6 +109,10 @@ export const climbActionSchema = z.discriminatedUnion("type", [
     activeId: z.string().min(1),
     overId: z.string().min(1),
   }),
+  z.object({
+    type: z.literal("reorder"),
+    levelIds: z.array(z.string().min(1)).min(2).max(MAX_LEVELS),
+  }),
 ]);
 
 export type ClimbAction = z.infer<typeof climbActionSchema>;

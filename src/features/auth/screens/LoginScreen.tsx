@@ -1,4 +1,6 @@
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
+
+import { afterSignInHref } from "@/app/navigation/signedInHref";
 import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
@@ -9,6 +11,7 @@ import { Screen } from "@/shared/components/Screen";
 import { TextField } from "@/shared/components/TextField";
 
 import { useAuth } from "../hooks/useAuth";
+import { useAuthStore } from "../store/auth.store";
 import { loginSchema } from "../utils/auth.schemas";
 
 export function LoginScreen() {
@@ -16,6 +19,7 @@ export function LoginScreen() {
   const styles = createStyles(colors);
 
   const { login, isLoggingIn, loginError, startGoogleAuth } = useAuth();
+  const { from } = useLocalSearchParams<{ from?: string }>();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
@@ -35,8 +39,8 @@ export function LoginScreen() {
     }
     setFieldErrors({});
     try {
-      await login(parsed.data);
-      router.replace("/(tabs)");
+      const session = await login(parsed.data);
+      router.replace(afterSignInHref(session.user, from));
     } catch (error) {
       setBanner(
         getErrorMessage(error) ||
@@ -53,7 +57,8 @@ export function LoginScreen() {
       setBanner(result.error);
       return;
     }
-    router.replace("/(tabs)");
+    const signedIn = useAuthStore.getState().user;
+    router.replace(afterSignInHref(signedIn ?? {}, from));
   }
 
   return (

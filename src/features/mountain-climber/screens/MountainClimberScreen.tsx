@@ -10,6 +10,7 @@ import { Screen } from "@/shared/components/Screen";
 import { AddLevelForm } from "../components/AddLevelForm";
 import { ClimbBrand } from "../components/ClimbBrand";
 import { ClimbHeader } from "../components/ClimbHeader";
+import { ClimbReorderSheet } from "../components/ClimbReorderSheet";
 import { GoalSetupWizard } from "../components/GoalSetupWizard";
 import { TrailList } from "../components/TrailList";
 import { useMountainClimb } from "../hooks/useMountainClimb";
@@ -23,6 +24,7 @@ export function MountainClimberScreen() {
   const state = useMountainClimb();
   const [isCreating, setIsCreating] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
+  const [reorderOpen, setReorderOpen] = useState(false);
   const [trailDragging, setTrailDragging] = useState(false);
   const scrollRef = useRef<ScrollView>(null);
   const contentRef = useRef<View>(null);
@@ -119,6 +121,8 @@ export function MountainClimberScreen() {
             onNewSummit={() => {
               if (state.requestNewSummit()) setIsCreating(true);
             }}
+            canReorder={climb.levels.filter((level) => level.completedAt === null).length >= 2}
+            onReorder={() => setReorderOpen(true)}
             onDelete={state.deleteSummit}
           />
           {state.error ? <Text style={styles.error}>{state.error}</Text> : null}
@@ -150,6 +154,13 @@ export function MountainClimberScreen() {
           />
         </View>
       </ScrollView>
+      {reorderOpen ? (
+        <ClimbReorderSheet
+          climb={climb}
+          onApply={state.reorderLevels}
+          onClose={() => setReorderOpen(false)}
+        />
+      ) : null}
     </Screen>
   );
 }

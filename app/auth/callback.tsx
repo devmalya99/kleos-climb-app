@@ -1,4 +1,6 @@
 import { Redirect, useLocalSearchParams } from "expo-router";
+
+import { afterSignInHref } from "@/app/navigation/signedInHref";
 import { useEffect, useState } from "react";
 
 import { useAuth } from "@/features/auth";
@@ -29,7 +31,10 @@ export default function AuthCallbackRoute() {
     void run();
   }, [params.error, params.token, refreshMe, setSession]);
 
-  if (done === "ok") return <Redirect href="/(tabs)" />;
+  if (done === "ok") {
+    const signedIn = useAuthStore.getState().user;
+    return <Redirect href={afterSignInHref(signedIn ?? {})} />;
+  }
   if (done === "error") return <Redirect href="/(auth)/login" />;
   return <LoadingBlock label="Finishing Google sign-in…" />;
 }

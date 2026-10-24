@@ -9,9 +9,11 @@ type TaskToolbarProps = {
   categoryName: string;
   pendingCount: number;
   reviewDisabled: boolean;
+  reorderDisabled: boolean;
   onNewTask: () => void;
   onExpand: () => void;
   onReview: () => void;
+  onReorder: () => void;
 };
 
 /** New-task row, AI actions, and the backlog heading. */
@@ -19,9 +21,11 @@ export function TaskToolbar({
   categoryName,
   pendingCount,
   reviewDisabled,
+  reorderDisabled,
   onNewTask,
   onExpand,
   onReview,
+  onReorder,
 }: TaskToolbarProps) {
   const { scheme } = useTheme();
   const night = scheme === "dark";
@@ -61,6 +65,15 @@ export function TaskToolbar({
           chrome={chrome}
           disabled={reviewDisabled}
           onPress={onReview}
+        />
+        <ActionCard
+          icon={taskIcon("arrow.up.arrow.down", "swap_vert")}
+          kicker="AI"
+          title="AI reorder"
+          subtitle="Suggest a new order"
+          chrome={chrome}
+          disabled={reorderDisabled}
+          onPress={onReorder}
         />
       </View>
 

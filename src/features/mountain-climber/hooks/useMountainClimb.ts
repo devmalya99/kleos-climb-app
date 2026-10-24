@@ -3,8 +3,9 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import * as Crypto from "expo-crypto";
 import { useEffect, useState } from "react";
 
-import { useSoftAction } from "@/shared/hooks/useSoftAction";
+import { getErrorMessage } from "@/services/api";
 import { logger } from "@/services/logging/logger";
+import { useSoftAction } from "@/shared/hooks/useSoftAction";
 
 import {
   applyClimbActionApi,
@@ -199,5 +200,20 @@ export function useMountainClimb() {
       runAction({ type: "setProgress", levelId, progress }),
     moveLevel: (activeId: string, overId: string) =>
       runAction({ type: "move", activeId, overId }),
+    reorderLevels: async (levelIds: string[]) => {
+      if (!climb) return { ok: false as const, error: "Climb unavailable" };
+      try {
+        await actionMutation.mutateAsync({
+          climbId: climb.id,
+          action: { type: "reorder", levelIds },
+        });
+        return { ok: true as const };
+      } catch (err) {
+        return {
+          ok: false as const,
+          error: getErrorMessage(err, "Could not save the order"),
+        };
+      }
+    },
   };
 }

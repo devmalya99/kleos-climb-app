@@ -4,3 +4,4 @@ export { WelcomeScreen } from "./screens/WelcomeScreen";
 export { LoginScreen } from "./screens/LoginScreen";
 export { SignupScreen } from "./screens/SignupScreen";
 export type { PublicUser, FeatureUnlocks } from "./types/auth.types";
+export { resolveDisplayName } from "./utils/displayName";
