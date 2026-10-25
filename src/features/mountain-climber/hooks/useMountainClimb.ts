@@ -1,10 +1,10 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import * as Crypto from "expo-crypto";
 import { useEffect, useState } from "react";
 
 import { getErrorMessage } from "@/services/api";
 import { logger } from "@/services/logging/logger";
+import { getItem, removeItem, setItem } from "@/services/storage/app-storage";
 import { useSoftAction } from "@/shared/hooks/useSoftAction";
 
 import {
@@ -28,9 +28,7 @@ import type { ClimbAction, ClimbSetupInput } from "../utils/climb.schemas";
 const actionMutationKey = [...CLIMB_QUERY_KEY, "action"] as const;
 
 function rememberSummit(id: string | null) {
-  const write = id
-    ? AsyncStorage.setItem(SELECTED_SUMMIT_KEY, id)
-    : AsyncStorage.removeItem(SELECTED_SUMMIT_KEY);
+  const write = id ? setItem(SELECTED_SUMMIT_KEY, id) : removeItem(SELECTED_SUMMIT_KEY);
   void write.catch((error: unknown) => {
     logger.warn("Could not remember the open summit", { error });
   });
@@ -58,7 +56,7 @@ export function useMountainClimb() {
 
   useEffect(() => {
     let cancelled = false;
-    AsyncStorage.getItem(SELECTED_SUMMIT_KEY)
+    getItem(SELECTED_SUMMIT_KEY)
       .then((stored) => {
         if (cancelled) return;
         setSelectedId(stored);

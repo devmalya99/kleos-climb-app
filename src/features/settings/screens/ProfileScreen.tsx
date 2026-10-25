@@ -1,4 +1,3 @@
-import Constants from "expo-constants";
 import { router } from "expo-router";
 import { useState } from "react";
 import { StyleSheet, Text } from "react-native";
@@ -13,7 +12,7 @@ import { Screen } from "@/shared/components/Screen";
 import { ScreenHeader } from "@/shared/components/ScreenHeader";
 import { confirmAction } from "@/shared/utils/confirmAction";
 
-const APP_VERSION = Constants.expoConfig?.version ?? "1.0.1";
+const APP_VERSION = "1.0.2";
 
 export function ProfileScreen() {
   const { colors } = useTheme();

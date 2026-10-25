@@ -5,7 +5,7 @@ A thin client for one study summit. The server owns the climb. The phone draws i
 ## Architecture
 - `api/climb.api.ts` — `GET/POST/PATCH/DELETE /api/mountain-climber/climb`. Responses are parsed with the same Zod board schema the server writes.
 - `utils/climb-path.ts` — copy of the server's pure actions, used only to update the query cache before the response returns. A 400 or 409 rolls that cache back.
-- `hooks/useMountainClimb` — TanStack Query plus AsyncStorage key `mountain-climber-summit`. The climb itself is not stored on the device.
+- `hooks/useMountainClimb` — TanStack Query plus a local file for the open summit id (`mountain-climber-summit`). The climb itself is not stored on the device.
 - `screens/MountainClimberScreen` — loading, error, two-step setup, or the trail. The ascent card switches summits, reorders open tasks with AI, and adds a task. Expedition opens new or delete for the whole climb (`DELETE /api/mountain-climber/climb?id=`). Tap a camp to edit, delete, clear, or set progress on one task. Drag reorders camps that are not cleared yet. AI reorder suggests an order and saves only on Apply.
 
 ## Routes owned

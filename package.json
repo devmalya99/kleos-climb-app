@@ -1,11 +1,10 @@
 {
   "name": "pacemaker-mobile",
   "main": "expo-router/entry",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "dependencies": {
     "@expo-google-fonts/bebas-neue": "^0.4.1",
     "@expo-google-fonts/dm-sans": "^0.4.2",
-    "@react-native-async-storage/async-storage": "2.2.0",
     "@shopify/flash-list": "^2.3.3",
     "@tanstack/react-query": "^5.104.2",
     "expo": "~57.0.28",

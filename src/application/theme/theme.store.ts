@@ -1,7 +1,7 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { create } from "zustand";
 
 import { logger } from "@/services/logging/logger";
+import { getItem, setItem } from "@/services/storage/app-storage";
 
 export type ThemePreference = "system" | "light" | "dark";
 
@@ -21,13 +21,13 @@ export const useThemeStore = create<ThemeStore>((set) => ({
   preference: "system",
   setPreference: (preference) => {
     set({ preference });
-    void AsyncStorage.setItem(STORAGE_KEY, preference).catch((error: unknown) => {
+    void setItem(STORAGE_KEY, preference).catch((error: unknown) => {
       logger.warn("Could not save the theme preference", { error });
     });
   },
   hydrate: async () => {
     try {
-      const stored = await AsyncStorage.getItem(STORAGE_KEY);
+      const stored = await getItem(STORAGE_KEY);
       if (isPreference(stored)) {
         set({ preference: stored });
       }

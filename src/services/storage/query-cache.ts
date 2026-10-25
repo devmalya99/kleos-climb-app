@@ -1,5 +1,6 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { dehydrate, hydrate, type QueryClient } from "@tanstack/react-query";
+
+import { getItem, removeItem, setItem } from "@/services/storage/app-storage";
 
 const STORAGE_KEY = "kleos.query-cache.v1";
 const MAX_AGE_MS = 12 * 60 * 60 * 1000;
@@ -23,16 +24,16 @@ function shouldKeep(queryKey: readonly unknown[]) {
 /** Restore the last successful server cache so screens can paint before the network. */
 export async function restoreQueryCache(client: QueryClient) {
   try {
-    const raw = await AsyncStorage.getItem(STORAGE_KEY);
+    const raw = await getItem(STORAGE_KEY);
     if (!raw) return;
     const snapshot = JSON.parse(raw) as Snapshot;
     if (!snapshot?.state || Date.now() - snapshot.savedAt > MAX_AGE_MS) {
-      await AsyncStorage.removeItem(STORAGE_KEY);
+      await removeItem(STORAGE_KEY);
       return;
     }
     hydrate(client, snapshot.state);
   } catch {
-    await AsyncStorage.removeItem(STORAGE_KEY).catch(() => undefined);
+    await removeItem(STORAGE_KEY).catch(() => undefined);
   }
 }
 
@@ -43,7 +44,7 @@ export async function clearPersistedQueryCache() {
     clearTimeout(timer);
     timer = null;
   }
-  await AsyncStorage.removeItem(STORAGE_KEY);
+  await removeItem(STORAGE_KEY);
 }
 
 export function watchQueryCache(client: QueryClient) {
@@ -65,7 +66,7 @@ async function writeCache(client: QueryClient, gen: number) {
     });
     if (gen !== generation) return;
     const snapshot: Snapshot = { savedAt: Date.now(), state };
-    await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot));
+    await setItem(STORAGE_KEY, JSON.stringify(snapshot));
   } catch {
     // A failed write only costs the next cold start a network round trip.
   }

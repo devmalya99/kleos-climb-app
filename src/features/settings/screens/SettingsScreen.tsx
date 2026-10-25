@@ -11,7 +11,7 @@ import { QuestPacingSection } from "../components/QuestPacingSection";
 import { XP_GOAL_MAX, XP_GOAL_MIN } from "../constants/settings.constants";
 import { useSettings } from "../hooks/useSettings";
 
-const APP_VERSION = Constants.expoConfig?.version ?? "1.0.1";
+const APP_VERSION = Constants.expoConfig?.version ?? "1.0.2";
 
 const APPEARANCE_OPTIONS: { value: ThemePreference; label: string }[] = [
   { value: "system", label: "System" },
