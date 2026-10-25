@@ -1,5 +1,5 @@
 import { useFocusEffect } from "expo-router";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { logger } from "@/services/logging/logger";
 
@@ -35,6 +35,10 @@ export function useSuggestedTask() {
       if (requestId === requestRef.current) setPicking(false);
     }
   }, []);
+
+  useEffect(() => {
+    void load();
+  }, [load]);
 
   useFocusEffect(
     useCallback(() => {

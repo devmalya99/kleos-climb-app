@@ -66,6 +66,15 @@ export function HomeScreen() {
         <View style={styles.header}>
           <Text style={styles.greeting}>{homeGreeting(scheme, resolveDisplayName(user))}</Text>
           <Text style={styles.date}>{homeDateLabel(new Date())}</Text>
+          {suggestion.task ? (
+            <SuggestedTaskCard
+              task={suggestion.task}
+              picking={suggestion.picking}
+              error={suggestion.error}
+              onOpen={() => router.navigate(clutterHref.tasks() as Href)}
+              onAnother={suggestion.pickAnother}
+            />
+          ) : null}
         </View>
         <View style={styles.fill} />
         <SummitStrip
@@ -78,15 +87,6 @@ export function HomeScreen() {
         <View style={styles.gap} />
       </SafeAreaView>
       <FrostedPanel source={scene} night={night} frame={frame} bottomInset={tabBarClearance(insets.bottom)}>
-        {suggestion.task ? (
-          <SuggestedTaskCard
-            task={suggestion.task}
-            picking={suggestion.picking}
-            error={suggestion.error}
-            onOpen={() => router.navigate(clutterHref.tasks() as Href)}
-            onAnother={suggestion.pickAnother}
-          />
-        ) : null}
         <Text style={[styles.panelTitle, { color: ink }]} numberOfLines={1}>
           {goal ?? "Your summits"}
         </Text>
@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
   header: {
     paddingHorizontal: spacing.lg,
     paddingTop: spacing.sm,
-    gap: 2,
+    gap: spacing.sm,
   },
   greeting: {
     fontFamily: typography.bodyBold,
