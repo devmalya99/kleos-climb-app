@@ -17,3 +17,10 @@ export const TIMER_MIN_MINUTES = 1;
 export const TIMER_MAX_MINUTES = 180;
 export const TIMER_DEFAULT_MINUTES = 25;
 export const TIMER_PRESET_MINUTES = [15, 25, 45, 60] as const;
+
+export const SUGGESTED_TASK_COPY = {
+  eyebrow: "Want to finish this now?",
+  another: "Another task",
+  picking: "Picking…",
+  pickError: "Could not pick another task.",
+} as const;

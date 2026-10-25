@@ -1,3 +1,4 @@
+import { router, type Href } from "expo-router";
 import { useRef, useState, type ReactNode } from "react";
 import { Image, ImageBackground, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
@@ -5,6 +6,8 @@ import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { tabBarClearance } from "@/app/navigation/tabBar";
 import { spacing, typography, useTheme } from "@/app/theme";
 import { resolveDisplayName, useAuth } from "@/features/auth";
+import { clutterHref } from "@/features/brain-clutter";
+import { SuggestedTaskCard, useSuggestedTask } from "@/features/task-manager";
 import { getErrorMessage } from "@/services/api";
 
 import { SummitStrip } from "../components/SummitStrip";
@@ -17,6 +20,7 @@ export function HomeScreen() {
   const insets = useSafeAreaInsets();
   const { user } = useAuth();
   const summits = useHomeSummits();
+  const suggestion = useSuggestedTask();
   const scene = homeScene(scheme);
   const night = scheme === "dark";
   const ink = night ? "#F4F7FB" : "#142033";
@@ -74,6 +78,15 @@ export function HomeScreen() {
         <View style={styles.gap} />
       </SafeAreaView>
       <FrostedPanel source={scene} night={night} frame={frame} bottomInset={tabBarClearance(insets.bottom)}>
+        {suggestion.task ? (
+          <SuggestedTaskCard
+            task={suggestion.task}
+            picking={suggestion.picking}
+            error={suggestion.error}
+            onOpen={() => router.navigate(clutterHref.tasks() as Href)}
+            onAnother={suggestion.pickAnother}
+          />
+        ) : null}
         <Text style={[styles.panelTitle, { color: ink }]} numberOfLines={1}>
           {goal ?? "Your summits"}
         </Text>

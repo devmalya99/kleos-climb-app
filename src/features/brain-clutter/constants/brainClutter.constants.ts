@@ -12,6 +12,8 @@ export const MAX_PINNED_GROUPS = 3;
 
 export const clutterHref = {
   group: (groupId: string) => `/clutter/${groupId}` as const,
+  /** New request id so a later tap still switches Tasks on, after the user chose Notes. */
+  tasks: () => `/(tabs)/clutter?mode=tasks&request=${Date.now()}`,
 };
 
 export const CLUTTER_MODES = [

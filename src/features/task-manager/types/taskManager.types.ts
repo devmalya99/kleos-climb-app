@@ -42,6 +42,14 @@ export type CategoriesResponse = { categories: TaskCategory[] };
 export type CategoryResponse = { category: TaskCategory };
 export type TasksResponse = { tasks: Task[] };
 export type TaskResponse = { task: Task };
+
+/** One open task chosen by the server for the Home suggestion. Not a second task record. */
+export type SuggestedTask = {
+  id: string;
+  title: string;
+  categoryId: string;
+  categoryName: string;
+};
 export type ReviewResponse = { items: ReviewItem[] };
 export type ExpandResponse = { tasks: ProposedTask[] };
 

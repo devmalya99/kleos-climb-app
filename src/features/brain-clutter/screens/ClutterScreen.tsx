@@ -1,5 +1,5 @@
-import { router, useFocusEffect } from "expo-router";
-import { useCallback, useRef, useState } from "react";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { radius, spacing, typography, useTheme, type AppColors } from "@/app/theme";
@@ -16,7 +16,15 @@ export function ClutterScreen() {
   const { colors } = useTheme();
   const styles = createStyles(colors);
 
-  const [mode, setMode] = useState<ClutterMode>("notes");
+  const params = useLocalSearchParams<{ mode?: string | string[]; request?: string | string[] }>();
+  const requestedMode = Array.isArray(params.mode) ? params.mode[0] : params.mode;
+  const requestId = Array.isArray(params.request) ? params.request[0] : params.request;
+  const [mode, setMode] = useState<ClutterMode>(requestedMode === "tasks" ? "tasks" : "notes");
+
+  useEffect(() => {
+    if (requestedMode !== "tasks" || !requestId) return;
+    setMode("tasks");
+  }, [requestedMode, requestId]);
   const [searchOpen, setSearchOpen] = useState(false);
   const [taskCategoryId, setTaskCategoryId] = useState<string | null>(null);
   const [canEditCategory, setCanEditCategory] = useState(false);
