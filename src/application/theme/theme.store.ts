@@ -1,6 +1,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { create } from "zustand";
 
+import { logger } from "@/services/logging/logger";
+
 export type ThemePreference = "system" | "light" | "dark";
 
 const STORAGE_KEY = "pacemaker.theme.preference";
@@ -19,12 +21,18 @@ export const useThemeStore = create<ThemeStore>((set) => ({
   preference: "system",
   setPreference: (preference) => {
     set({ preference });
-    void AsyncStorage.setItem(STORAGE_KEY, preference);
+    void AsyncStorage.setItem(STORAGE_KEY, preference).catch((error: unknown) => {
+      logger.warn("Could not save the theme preference", { error });
+    });
   },
   hydrate: async () => {
-    const stored = await AsyncStorage.getItem(STORAGE_KEY);
-    if (isPreference(stored)) {
-      set({ preference: stored });
+    try {
+      const stored = await AsyncStorage.getItem(STORAGE_KEY);
+      if (isPreference(stored)) {
+        set({ preference: stored });
+      }
+    } catch (error) {
+      logger.warn("Could not read the theme preference", { error });
     }
   },
 }));

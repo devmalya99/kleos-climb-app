@@ -111,33 +111,37 @@ export function ClimbHeader({
       <View style={styles.actions}>
         {canAddTask ? (
           <Pressable accessibilityRole="button" onPress={onAddTask} style={styles.add}>
-            <Text style={styles.addLabel}>{night ? "+  Add expedition task" : "+  Add task to camp"}</Text>
+            <Text style={styles.addLabel} numberOfLines={1}>
+              {night ? "+  Add expedition task" : "+  Add task to camp"}
+            </Text>
           </Pressable>
         ) : (
           <Text style={styles.reached}>Summit reached</Text>
         )}
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="AI reorder"
-          accessibilityState={{ disabled: !canReorder }}
-          disabled={!canReorder}
-          onPress={onReorder}
-          style={[styles.summit, !canReorder ? styles.reorderOff : null]}
-        >
-          <Text style={styles.summitLabel}>AI reorder</Text>
-        </Pressable>
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="Expedition actions"
-          onPress={() => setMenuOpen(true)}
-          style={night ? styles.iconButton : styles.summit}
-        >
-          {night ? (
-            <SymbolView name={icon("line.3.horizontal", "menu")} tintColor={chrome.ink} size={18} />
-          ) : (
-            <Text style={styles.summitLabel}>Expedition</Text>
-          )}
-        </Pressable>
+        <View style={styles.secondary}>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="AI reorder"
+            accessibilityState={{ disabled: !canReorder }}
+            disabled={!canReorder}
+            onPress={onReorder}
+            style={[styles.summit, styles.grow, !canReorder ? styles.reorderOff : null]}
+          >
+            <Text style={styles.summitLabel}>AI reorder</Text>
+          </Pressable>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Expedition actions"
+            onPress={() => setMenuOpen(true)}
+            style={night ? styles.iconButton : [styles.summit, styles.grow]}
+          >
+            {night ? (
+              <SymbolView name={icon("line.3.horizontal", "menu")} tintColor={chrome.ink} size={18} />
+            ) : (
+              <Text style={styles.summitLabel}>Expedition</Text>
+            )}
+          </Pressable>
+        </View>
       </View>
       <SheetModal visible={pickerOpen} title="Summits" onClose={() => setPickerOpen(false)}>
         <SummitSwitcher
@@ -221,9 +225,10 @@ function createStyles(chrome: ClimbChrome) {
     statHint: { fontFamily: typography.body, fontSize: 11, color: chrome.muted },
     statHintWarm: { fontFamily: typography.bodyMedium, fontSize: 11, color: chrome.honey },
     overdue: { color: "#E15B64" },
-    actions: { flexDirection: "row", flexWrap: "wrap", alignItems: "center", gap: spacing.sm },
+    actions: { gap: spacing.sm },
+    secondary: { flexDirection: "row", alignItems: "center", gap: spacing.sm },
+    grow: { flex: 1 },
     add: {
-      flex: 1,
       minHeight: 48,
       borderRadius: radius.pill,
       backgroundColor: chrome.honey,
@@ -254,7 +259,9 @@ function createStyles(chrome: ClimbChrome) {
       justifyContent: "center",
     },
     reached: {
-      flex: 1,
+      minHeight: 48,
+      lineHeight: 48,
+      textAlign: "center",
       fontFamily: typography.bodyBold,
       fontSize: 16,
       color: chrome.positive,
