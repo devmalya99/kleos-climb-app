@@ -29,7 +29,7 @@ type Sheet =
   | { kind: "focus"; task: Task }
   | null;
 
-/** Rename and delete for the category controls beside Notes / Tasks. */
+/** Rename and delete for the category controls on the Tasks tab. */
 export type TaskCategoryActions = {
   rename: () => void;
   remove: () => void;
@@ -42,7 +42,7 @@ type TaskManagerScreenProps = {
   onCategoryEditableChange?: (editable: boolean) => void;
 };
 
-/** Tasks mode of the Clutter tab. AI expand/review always preview before saving. */
+/** Tasks tab content. AI expand/review always preview before saving. */
 export function TaskManagerScreen({
   focusCategoryId = null,
   categoryActionsRef,
@@ -132,6 +132,8 @@ export function TaskManagerScreen({
       style={styles.scroll}
       contentContainerStyle={styles.content}
       keyboardShouldPersistTaps="handled"
+      keyboardDismissMode="interactive"
+      automaticallyAdjustKeyboardInsets
     >
       {categories.categories.length === 0 ? (
         <EmptyState

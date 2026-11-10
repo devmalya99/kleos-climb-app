@@ -12,16 +12,11 @@ export const MAX_PINNED_GROUPS = 3;
 
 export const clutterHref = {
   group: (groupId: string) => `/clutter/${groupId}` as const,
-  /** New request id so a later tap still switches Tasks on, after the user chose Notes. */
-  tasks: () => `/(tabs)/clutter?mode=tasks&request=${Date.now()}`,
+  tasks: (categoryId?: string) =>
+    (categoryId ? `/(tabs)/tasks?categoryId=${categoryId}` : "/(tabs)/tasks") as
+      | "/(tabs)/tasks"
+      | `/(tabs)/tasks?categoryId=${string}`,
 };
-
-export const CLUTTER_MODES = [
-  { value: "notes", label: "Notes" },
-  { value: "tasks", label: "Tasks" },
-] as const;
-
-export type ClutterMode = (typeof CLUTTER_MODES)[number]["value"];
 
 /**
  * Honey for Clutter controls. Dark mode's app accent is periwinkle, so this

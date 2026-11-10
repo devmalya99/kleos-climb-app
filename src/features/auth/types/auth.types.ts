@@ -7,7 +7,7 @@ export type FeatureUnlocks = {
 export type PublicUser = {
   id: string;
   email: string;
-  /** Name from onboarding. Empty until they finish, then the trimmed value. */
+  /** Display name from the account. May be empty until the user sets one. */
   displayName: string | null;
   /** Null until the first expedition save. Missing on an older session means already in. */
   onboardedAt: string | null;

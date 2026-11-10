@@ -4,6 +4,7 @@ export { SuggestedTaskCard } from "./components/SuggestedTaskCard";
 export { useSuggestedTask } from "./hooks/useSuggestedTask";
 export { TaskManagerScreen } from "./screens/TaskManagerScreen";
 export type { TaskCategoryActions } from "./screens/TaskManagerScreen";
+export { TasksScreen } from "./screens/TasksScreen";
 export { taskChrome, taskIcon } from "./utils/taskChrome";
 export type { TaskChrome } from "./utils/taskChrome";
 export { TASK_QUERY_KEYS } from "./constants/taskManager.constants";

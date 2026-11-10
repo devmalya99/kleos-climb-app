@@ -12,9 +12,7 @@ import { Screen } from "@/shared/components/Screen";
 import { ChatPane } from "../components/ChatPane";
 import { ConversationsSheet } from "../components/ConversationsSheet";
 import { TaurusHeader } from "../components/TaurusHeader";
-import { TaurusStatusRow } from "../components/TaurusStatusRow";
 import { useTaurusConversations } from "../hooks/useTaurusConversations";
-import { useTaurusTrail } from "../hooks/useTaurusTrail";
 import { taurusChrome } from "../utils/taurusChrome";
 
 const backdrop = {
@@ -65,7 +63,6 @@ export function TaurusScreen() {
   const night = scheme === "dark";
 
   const taurus = useTaurusConversations();
-  const trail = useTaurusTrail();
   const keyboardOverlap = useKeyboardOverlap();
   const [historyOpen, setHistoryOpen] = useState(false);
   const { conversation } = taurus;
@@ -86,7 +83,6 @@ export function TaurusScreen() {
           onNew={() => void taurus.startNewChat()}
         />
 
-        {trail ? <TaurusStatusRow status={trail} /> : null}
         {taurus.error ? <Text style={styles.error}>{taurus.error}</Text> : null}
 
         {taurus.isLoading ? <LoadingBlock label="Opening chat…" /> : null}

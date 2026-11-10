@@ -13,6 +13,5 @@ Streaming chat study assistant with tool cards.
 ## Limitations
 - Google Calendar consent deep-link remains web-only.
 - Voice / VAD / TTS barge-in not in this slice. The mic and attach marks in the composer are visual only; chat streaming is wired.
-- The status pill shows the active climb (goal, current camp, current step). It stays hidden when there is no trail.
 - Assistant replies render as an insight card when the text has a numbered list or an `Elevation:` / `Altitude:` line. Other replies stay plain bubbles.
 - Tool side effects invalidate exams, timetable, and brain-clutter queries.

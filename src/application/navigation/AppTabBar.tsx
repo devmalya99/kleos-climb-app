@@ -1,6 +1,7 @@
 import { SymbolView } from "expo-symbols";
 import type { ComponentProps } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { useEffect, useState } from "react";
+import { Keyboard, Platform, StyleSheet, Text, View } from "react-native";
 
 import { typography, useTheme } from "@/app/theme";
 import { PressableScale } from "@/shared/components/PressableScale";
@@ -15,10 +16,10 @@ type IconName = {
 
 const ICONS: Record<string, IconName> = {
   index: { ios: "house.fill", android: "home" },
-  climb: { ios: "mountain.2.fill", android: "landscape" },
+  tasks: { ios: "checklist", android: "checklist" },
   taurus: { ios: "bubble.left.fill", android: "chat" },
-  clutter: { ios: "book.fill", android: "menu_book" },
-  more: { ios: "person.fill", android: "person" },
+  notes: { ios: "book.fill", android: "menu_book" },
+  control: { ios: "slider.horizontal.3", android: "tune" },
 };
 
 type AppTabBarProps = {
@@ -28,7 +29,9 @@ type AppTabBarProps = {
   };
   descriptors: Record<string, { options: { title?: string } }>;
   navigation: {
-    emit: (event: { type: "tabPress"; target: string; canPreventDefault: true }) => { defaultPrevented: boolean };
+    emit: (event: { type: "tabPress"; target: string; canPreventDefault: true }) => {
+      defaultPrevented: boolean;
+    };
     navigate: (name: string, params?: object) => void;
   };
   insets: { bottom: number };
@@ -37,9 +40,23 @@ type AppTabBarProps = {
 export function AppTabBar({ state, descriptors, navigation, insets }: AppTabBarProps) {
   const { scheme } = useTheme();
   const night = scheme === "dark";
+  const [keyboardOpen, setKeyboardOpen] = useState(false);
   const bar = night
     ? { background: "#141821", border: "#2A3142", inactive: "#8E95A5", active: "#F5A524", pill: "transparent" }
     : { background: "#FFFFFF", border: "#EFE8DE", inactive: "#9A938A", active: "#7A5209", pill: "#F8E7C0" };
+
+  useEffect(() => {
+    const showEvent = Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow";
+    const hideEvent = Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide";
+    const show = Keyboard.addListener(showEvent, () => setKeyboardOpen(true));
+    const hide = Keyboard.addListener(hideEvent, () => setKeyboardOpen(false));
+    return () => {
+      show.remove();
+      hide.remove();
+    };
+  }, []);
+
+  if (keyboardOpen) return null;
 
   return (
     <View
@@ -56,7 +73,7 @@ export function AppTabBar({ state, descriptors, navigation, insets }: AppTabBarP
       {state.routes.map((route, index) => {
         const focused = state.index === index;
         const color = focused ? bar.active : bar.inactive;
-        const icon = ICONS[route.name] ?? ICONS.more;
+        const icon = ICONS[route.name] ?? ICONS.control;
         const label = descriptors[route.key]?.options.title ?? route.name;
 
         return (

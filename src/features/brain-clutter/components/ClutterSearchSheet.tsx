@@ -12,6 +12,8 @@ import { useClutterSearch, type NoteSearchHit, type TaskSearchHit } from "../hoo
 
 type ClutterSearchSheetProps = {
   visible: boolean;
+  /** Which list this tab searches. */
+  scope?: "notes" | "tasks";
   onClose: () => void;
   onOpenNote: (groupId: string) => void;
   onOpenTask: (categoryId: string) => void;
@@ -19,6 +21,7 @@ type ClutterSearchSheetProps = {
 
 export function ClutterSearchSheet({
   visible,
+  scope = "notes",
   onClose,
   onOpenNote,
   onOpenTask,
@@ -27,27 +30,32 @@ export function ClutterSearchSheet({
   const styles = createStyles(colors);
   const search = useClutterSearch(visible);
   const hasQuery = search.query.trim().length > 0;
+  const showNotes = scope === "notes";
+  const showTasks = scope === "tasks";
+  const noteResults = showNotes ? search.noteResults : [];
+  const taskResults = showTasks ? search.taskResults : [];
+  const subject = scope === "notes" ? "notes" : "tasks";
 
   return (
     <SheetModal visible={visible} title="Search" onClose={onClose}>
       <TextField
-        label="Notes and tasks"
+        label={scope === "notes" ? "Notes" : "Tasks"}
         value={search.query}
         onChangeText={search.setQuery}
         placeholder="Title or text"
         autoCapitalize="none"
       />
-      {search.loading ? <LoadingBlock label="Searching notes and tasks…" /> : null}
+      {search.loading ? <LoadingBlock label={`Searching ${subject}…`} /> : null}
       {search.error ? <Text style={styles.error}>{search.error}</Text> : null}
       {!search.loading && !search.error && !hasQuery ? (
-        <Text style={styles.hint}>Type to search every note and task.</Text>
+        <Text style={styles.hint}>Type to search your {subject}.</Text>
       ) : null}
-      {!search.loading && hasQuery && search.noteResults.length === 0 && search.taskResults.length === 0 ? (
+      {!search.loading && hasQuery && noteResults.length === 0 && taskResults.length === 0 ? (
         <EmptyState title="No matches" body={`Nothing contains “${search.query.trim()}”.`} />
       ) : null}
-      {search.noteResults.length > 0 ? (
+      {noteResults.length > 0 ? (
         <ResultSection title="Notes" styles={styles}>
-          {search.noteResults.map((note) => (
+          {noteResults.map((note) => (
             <ListRow
               key={note.id}
               title={note.title || "Untitled note"}
@@ -57,9 +65,9 @@ export function ClutterSearchSheet({
           ))}
         </ResultSection>
       ) : null}
-      {search.taskResults.length > 0 ? (
+      {taskResults.length > 0 ? (
         <ResultSection title="Tasks" styles={styles}>
-          {search.taskResults.map((task) => (
+          {taskResults.map((task) => (
             <ListRow
               key={task.id}
               title={task.title}

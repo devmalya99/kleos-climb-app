@@ -2,10 +2,10 @@ import { ExpoConfig, ConfigContext } from "expo/config";
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
-  name: "PaceMaker",
+  name: "Kleos",
   slug: "pacemaker-mobile",
   owner: "debmalya99",
-  version: "1.0.2",
+  version: "1.0.4",
   // Finished preview binary (Android build 1, 21 Oct 2026) is runtime 1.0.0.
   // Pin this so the next OTA still installs there. `version` is what Settings shows.
   runtimeVersion: "1.0.0",

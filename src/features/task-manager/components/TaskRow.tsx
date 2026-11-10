@@ -45,28 +45,22 @@ export function TaskRow({ task, onToggle, onEdit, onFocus, onDelete }: TaskRowPr
         </View>
       ) : null}
       <View style={styles.actions}>
+        <View style={styles.spacer} />
         {task.isCompleted ? null : (
-          <PressableScale accessibilityLabel="Focus" pressedScale={0.94} onPress={onFocus} style={styles.focus}>
+          <PressableScale
+            accessibilityLabel={`Start a timer for ${task.title}`}
+            hitSlop={6}
+            pressedScale={0.9}
+            onPress={onFocus}
+            style={styles.focus}
+          >
             <SymbolView
-              name={taskIcon(night ? "flame.fill" : "scope", night ? "local_fire_department" : "center_focus_strong")}
-              tintColor={night ? chrome.focusInk : chrome.honey}
-              size={14}
+              name={taskIcon("clock.fill", "schedule")}
+              tintColor={night ? chrome.focusInk : chrome.honeyInk}
+              size={16}
             />
-            <Text style={styles.focusLabel}>{night ? "Enter Focus" : "Deep Focus"}</Text>
           </PressableScale>
         )}
-        {night ? (
-          <PressableScale
-            accessibilityLabel={`Delete ${task.title}`}
-            pressedScale={0.94}
-            onPress={onDelete}
-            style={styles.deleteText}
-          >
-            <SymbolView name={taskIcon("trash", "delete")} tintColor={chrome.danger} size={14} />
-            <Text style={styles.deleteLabel}>Delete</Text>
-          </PressableScale>
-        ) : null}
-        <View style={styles.spacer} />
         <PressableScale
           accessibilityLabel={`Edit ${task.title}`}
           hitSlop={6}
@@ -76,17 +70,15 @@ export function TaskRow({ task, onToggle, onEdit, onFocus, onDelete }: TaskRowPr
         >
           <SymbolView name={taskIcon("ellipsis", "more_horiz")} tintColor={chrome.muted} size={16} />
         </PressableScale>
-        {night ? null : (
-          <PressableScale
-            accessibilityLabel={`Delete ${task.title}`}
-            hitSlop={6}
-            pressedScale={0.9}
-            onPress={onDelete}
-            style={styles.trash}
-          >
-            <SymbolView name={taskIcon("trash", "delete")} tintColor={chrome.danger} size={15} />
-          </PressableScale>
-        )}
+        <PressableScale
+          accessibilityLabel={`Delete ${task.title}`}
+          hitSlop={6}
+          pressedScale={0.9}
+          onPress={onDelete}
+          style={styles.trash}
+        >
+          <SymbolView name={taskIcon("trash", "delete")} tintColor={chrome.danger} size={16} />
+        </PressableScale>
       </View>
     </View>
   );
@@ -126,31 +118,13 @@ function createStyles(chrome: TaskChrome, night: boolean) {
     notes: { fontFamily: typography.body, fontSize: 13, lineHeight: 19, color: chrome.notesInk },
     actions: { flexDirection: "row", alignItems: "center", gap: spacing.sm },
     focus: {
-      flexDirection: "row",
+      width: 36,
+      height: 36,
+      borderRadius: 12,
       alignItems: "center",
-      gap: 6,
-      minHeight: 36,
-      borderRadius: radius.pill,
-      paddingHorizontal: spacing.md,
-      backgroundColor: night ? chrome.focus : chrome.honeySoft,
-      borderWidth: night ? 0 : 1,
-      borderColor: chrome.honey,
+      justifyContent: "center",
+      backgroundColor: night ? chrome.focus : chrome.honey,
     },
-    focusLabel: {
-      fontFamily: typography.bodyBold,
-      fontSize: 13,
-      color: night ? chrome.focusInk : chrome.honeyInk,
-    },
-    deleteText: {
-      flexDirection: "row",
-      alignItems: "center",
-      gap: 4,
-      minHeight: 36,
-      borderRadius: radius.pill,
-      paddingHorizontal: spacing.sm,
-      backgroundColor: chrome.dangerSoft,
-    },
-    deleteLabel: { fontFamily: typography.bodyMedium, fontSize: 13, color: chrome.danger },
     spacer: { flex: 1 },
     iconButton: {
       width: 36,

@@ -2,7 +2,6 @@ import { ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import {
   KeyboardAvoidingView,
   Modal,
-  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -76,10 +75,7 @@ export function SheetModal({ visible, title, onClose, children }: SheetModalProp
       statusBarTranslucent
       onRequestClose={requestClose}
     >
-      <KeyboardAvoidingView
-        style={styles.root}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-      >
+      <KeyboardAvoidingView style={styles.root} behavior="padding">
         <Animated.View style={[styles.backdrop, backdropStyle]}>
           <Pressable style={StyleSheet.absoluteFill} onPress={requestClose} />
         </Animated.View>
@@ -91,7 +87,12 @@ export function SheetModal({ visible, title, onClose, children }: SheetModalProp
               <Text style={styles.close}>Close</Text>
             </PressableScale>
           </View>
-          <ScrollView contentContainerStyle={styles.body} keyboardShouldPersistTaps="handled">
+          <ScrollView
+            contentContainerStyle={styles.body}
+            keyboardShouldPersistTaps="handled"
+            keyboardDismissMode="interactive"
+            automaticallyAdjustKeyboardInsets
+          >
             {children}
           </ScrollView>
         </Animated.View>

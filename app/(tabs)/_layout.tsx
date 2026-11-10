@@ -1,31 +1,24 @@
-import { Redirect, Tabs, type Href } from "expo-router";
+import { Redirect, Tabs } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { AppTabBar } from "@/app/navigation/AppTabBar";
-import { needsOnboarding } from "@/app/navigation/signedInHref";
 import { tabBarClearance } from "@/app/navigation/tabBar";
 import { useTheme } from "@/app/theme";
 import { useAuth } from "@/features/auth";
-import { climbChrome } from "@/features/mountain-climber";
 import { LoadingBlock } from "@/shared/components/LoadingBlock";
 
 export default function TabLayout() {
-  const { colors, scheme } = useTheme();
+  const { colors } = useTheme();
   const insets = useSafeAreaInsets();
   const { hydrated, token, user, isAuthenticated } = useAuth();
   const clearance = tabBarClearance(insets.bottom);
-  const climbPage = climbChrome(scheme).page;
 
   if (!hydrated || (token && !user)) {
-    return <LoadingBlock label="Booting PaceMaker…" />;
+    return <LoadingBlock label="Booting Kleos…" />;
   }
 
   if (!isAuthenticated) {
     return <Redirect href="/(auth)/welcome" />;
-  }
-
-  if (needsOnboarding(user)) {
-    return <Redirect href={"/onboarding" as Href} />;
   }
 
   return (
@@ -53,13 +46,7 @@ export default function TabLayout() {
           sceneStyle: { paddingBottom: 0, backgroundColor: "transparent" },
         }}
       />
-      <Tabs.Screen
-        name="climb"
-        options={{
-          title: "Climb",
-          sceneStyle: { paddingBottom: clearance, backgroundColor: climbPage },
-        }}
-      />
+      <Tabs.Screen name="tasks" options={{ title: "Tasks" }} />
       <Tabs.Screen
         name="taurus"
         options={{
@@ -67,8 +54,8 @@ export default function TabLayout() {
           sceneStyle: { paddingBottom: 0, backgroundColor: "transparent" },
         }}
       />
-      <Tabs.Screen name="clutter" options={{ title: "Clutter" }} />
-      <Tabs.Screen name="more" options={{ title: "More" }} />
+      <Tabs.Screen name="notes" options={{ title: "Notes" }} />
+      <Tabs.Screen name="control" options={{ title: "Control" }} />
     </Tabs>
   );
 }

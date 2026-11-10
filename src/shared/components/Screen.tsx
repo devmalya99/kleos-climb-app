@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import {
+  KeyboardAvoidingView,
   RefreshControl,
   ScrollView,
   StyleSheet,
@@ -38,49 +39,54 @@ export function Screen({
   const styles = createStyles(colors);
 
   const body = scroll ? (
-        <ScrollView
-          style={styles.enter}
-          contentContainerStyle={[styles.content, contentStyle]}
-          keyboardShouldPersistTaps="handled"
-          refreshControl={
-            onRefresh ? (
-              <RefreshControl
-                refreshing={refreshing}
-                onRefresh={onRefresh}
-                tintColor={colors.accent}
-                colors={[colors.accentFill]}
-              />
-            ) : undefined
-          }
-        >
-          {children}
-        </ScrollView>
+    <ScrollView
+      style={styles.enter}
+      contentContainerStyle={[styles.content, contentStyle]}
+      keyboardShouldPersistTaps="handled"
+      keyboardDismissMode="interactive"
+      automaticallyAdjustKeyboardInsets
+      contentInsetAdjustmentBehavior="automatic"
+      refreshControl={
+        onRefresh ? (
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor={colors.accent}
+            colors={[colors.accentFill]}
+          />
+        ) : undefined
+      }
+    >
+      {children}
+    </ScrollView>
   ) : (
     <View style={[styles.content, contentStyle]}>{children}</View>
   );
 
   return (
     <SafeAreaView style={[styles.root, style]} edges={edges}>
-      <Animated.View entering={SCREEN_ENTER} style={styles.enter}>
-        {body}
-      </Animated.View>
+      <KeyboardAvoidingView behavior="padding" style={styles.enter}>
+        <Animated.View entering={SCREEN_ENTER} style={styles.enter}>
+          {body}
+        </Animated.View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
 
 function createStyles(colors: AppColors) {
   return StyleSheet.create({
-  root: {
-    flex: 1,
-    backgroundColor: colors.surface,
-  },
-  enter: {
-    flex: 1,
-  },
-  content: {
-    flexGrow: 1,
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.md,
-  },
-});
+    root: {
+      flex: 1,
+      backgroundColor: colors.surface,
+    },
+    enter: {
+      flex: 1,
+    },
+    content: {
+      flexGrow: 1,
+      paddingHorizontal: spacing.lg,
+      paddingVertical: spacing.md,
+    },
+  });
 }

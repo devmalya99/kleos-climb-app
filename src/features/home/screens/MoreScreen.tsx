@@ -17,7 +17,7 @@ export function MoreScreen() {
 
   return (
     <Screen scroll contentStyle={styles.content}>
-      <Text style={styles.title}>More</Text>
+      <Text style={styles.title}>Control</Text>
       <View style={styles.list}>
         {MORE_ITEMS.map((item) => {
           const locked = access.isLocked(item);

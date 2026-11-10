@@ -1,5 +1,5 @@
 import { MoreScreen } from "@/features/home";
 
-export default function MoreTab() {
+export default function ControlTab() {
   return <MoreScreen />;
 }
